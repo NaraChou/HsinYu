@@ -72,16 +72,33 @@ export const StudentLogin: React.FC = () => {
 
       if (data.user) {
         // Query role
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', data.user.id)
           .single();
           
-        const role = profile?.role || 'student';
+        // check for invite type
+        const searchParams = new URLSearchParams(location.search);
+        const isInvite = searchParams.get('type') === 'invite';
+
+        if (!profile || profileError) {
+          setErrorMsg('帳號初始化中...');
+          
+          if (isInvite) {
+            // 自動建立名冊雛形
+            await supabase
+              .from('profiles')
+              .insert([{ id: data.user.id, role: 'student' }]);
+          }
+          
+          navigate('/update-password');
+          return;
+        }
+
+        const role = profile.role;
 
         if (role === 'student') {
-          const searchParams = new URLSearchParams(location.search);
           const redirectTo = searchParams.get('redirect') || '/student/dashboard';
           navigate(redirectTo);
         } else {
