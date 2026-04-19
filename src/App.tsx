@@ -64,8 +64,13 @@ export default function App() {
 
   React.useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        navigate('/update-password');
+      // 監聽重設密碼事件或透過邀請連結進入初始化的 session
+      if (event === 'PASSWORD_RECOVERY' || event === 'INITIAL_SESSION') {
+        const { data: { session } } = await supabase.auth.getSession();
+        // 確保用戶已認證，且不重複跳轉
+        if (session && window.location.pathname !== '/update-password') {
+          navigate('/update-password');
+        }
       }
     });
     return () => subscription.unsubscribe();

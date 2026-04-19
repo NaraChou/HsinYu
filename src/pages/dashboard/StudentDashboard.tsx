@@ -2,48 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { LAYOUT } from '../../styles/layout';
-import { BookOpen, User, LogOut, Award, Calendar } from 'lucide-react';
+import { BookOpen, LogOut, Award, CheckCircle, XCircle, BarChart2 } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 /**
  * [A] 視覺資訊備註
- * 頁面：StudentDashboard (學生與家長儀表板)
- * 視覺：親切溫暖的圓角設計，強調重點資訊。
+ * 元件：學生儀表板，極簡黑白卡片風格，含簽到看板與成績折線圖。
  */
 
-interface Grade {
-  id: string;
-  subject: string;
-  score: number;
-  exam_date: string;
-}
-
+// [B] 樣式常數
 const STYLES = {
-  wrapper: 'flex flex-col min-h-screen w-full px-4 py-10 md:px-6 md:py-20 theme-transition bg-neutral-50',
+  wrapper: 'flex flex-col min-h-screen w-full px-4 py-10 md:px-6 md:py-20 bg-neutral-50',
   container: LAYOUT.container,
-  header: 'flex justify-between items-center mb-8 bg-white p-6 rounded-3xl shadow-sm border border-neutral-100',
-  titleBox: 'flex flex-col',
-  title: 'text-2xl font-bold text-[var(--brand-primary)]',
-  subtitle: 'text-sm text-neutral-500 mt-1',
-  logoutBtn: 'px-6 py-3 bg-red-50 text-red-600 font-bold rounded-xl transition-all hover:bg-red-100 active:scale-95 text-sm flex items-center gap-2',
+  header: 'flex justify-between items-center mb-8 bg-white p-8 border border-black',
+  title: 'text-3xl font-black tracking-widest',
+  logoutBtn: 'border border-black px-6 py-2 text-[10px] font-bold tracking-widest uppercase hover:bg-black hover:text-white transition-all',
   
-  grid: 'grid grid-cols-1 lg:grid-cols-3 gap-6',
-  card: 'bg-white border border-neutral-100 p-8 rounded-3xl shadow-sm h-full',
-  cardHeader: 'flex items-center gap-3 mb-6',
-  cardTitle: 'text-xl font-bold text-neutral-800',
-  iconWrapper: 'p-3 rounded-2xl bg-blue-50 text-[var(--hsinyu-blue)]',
+  grid: 'grid grid-cols-1 lg:grid-cols-2 gap-8',
+  card: 'bg-white border border-black p-8',
+  cardTitle: 'text-xs font-bold tracking-widest uppercase mb-8',
   
-  gradeRow: 'flex justify-between items-center py-4 border-b border-neutral-100 last:border-0',
-  gradeSubject: 'font-bold text-neutral-700',
-  gradeScore: 'text-2xl font-black text-[var(--hsinyu-blue)]',
+  statusWrapper: 'flex items-center gap-4 text-2xl font-black tracking-widest',
 } as const;
 
 export const StudentDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
-  const [grades, setGrades] = useState<Grade[]>([]);
+  const [attendance, setAttendance] = useState<any>(null);
+  const [grades, setGrades] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchUserAndData = async () => {
+    const fetchDashboardData = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate('/student/login');
@@ -51,17 +40,27 @@ export const StudentDashboard: React.FC = () => {
       }
       setUser(session.user);
 
-      // fetch personal grades
-      const { data: gradesData } = await supabase
-        .from('grades')
+      // Fetch Attendance: Today
+      const today = new Date().toISOString().split('T')[0];
+      const { data: attendanceData } = await supabase
+        .from('attendance_logs')
         .select('*')
         .eq('user_id', session.user.id)
-        .order('exam_date', { ascending: false });
+        .eq('created_at', today) // Simplified: assumes created_at is YYYY-MM-DD
+        .single();
+      setAttendance(attendanceData);
 
+      // Fetch Grades
+      const { data: gradesData } = await supabase
+        .from('student_grades')
+        .select('subject, score, exam_date')
+        .eq('user_id', session.user.id)
+        .order('exam_date', { ascending: true });
+      
       if (gradesData) setGrades(gradesData);
     };
 
-    fetchUserAndData();
+    fetchDashboardData();
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -73,49 +72,36 @@ export const StudentDashboard: React.FC = () => {
     <div className={STYLES.wrapper}>
       <div className={STYLES.container}>
         <header className={STYLES.header}>
-          <div className={STYLES.titleBox}>
-            <h1 className={STYLES.title}>個人學習儀表板</h1>
-            <p className={STYLES.subtitle}>歡迎回來，{user?.email}</p>
-          </div>
-          <button onClick={handleLogout} className={STYLES.logoutBtn}>
-            <LogOut size={16} /> 登出系統
-          </button>
+          <h1 className={STYLES.title}>STUDENT PORTAL</h1>
+          <button onClick={handleLogout} className={STYLES.logoutBtn}>登出</button>
         </header>
 
         <div className={STYLES.grid}>
-          {/* 個人成績單 */}
-          <div className={`${STYLES.card} lg:col-span-2`}>
-            <div className={STYLES.cardHeader}>
-              <div className={STYLES.iconWrapper}><Award size={24} /></div>
-              <h2 className={STYLES.cardTitle}>個人成績單</h2>
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              {grades.length > 0 ? (
-                grades.map(grade => (
-                  <div key={grade.id} className={STYLES.gradeRow}>
-                    <div className="flex flex-col">
-                      <span className={STYLES.gradeSubject}>{grade.subject}</span>
-                      <span className="text-xs text-neutral-400 mt-1">{new Date(grade.exam_date).toLocaleDateString('zh-TW')}</span>
-                    </div>
-                    <span className={STYLES.gradeScore}>{grade.score}</span>
-                  </div>
-                ))
+          {/* Today's Status */}
+          <div className={STYLES.card}>
+            <h2 className={STYLES.cardTitle}>今日簽到狀態</h2>
+            <div className={STYLES.statusWrapper}>
+              {attendance ? (
+                <><CheckCircle className="text-black" /> 已完成簽到</>
               ) : (
-                <div className="text-center py-10 text-neutral-400 text-sm">目前尚無成績紀錄</div>
+                <><XCircle className="text-neutral-300" /> 今日尚未簽到</>
               )}
             </div>
           </div>
 
-          {/* 電子聯絡簿 */}
+          {/* Grade Chart */}
           <div className={STYLES.card}>
-            <div className={STYLES.cardHeader}>
-              <div className={STYLES.iconWrapper}><BookOpen size={24} /></div>
-              <h2 className={STYLES.cardTitle}>電子聯絡簿</h2>
-            </div>
-            <div className="flex flex-col items-center justify-center py-10 opacity-50">
-              <Calendar size={48} className="text-neutral-300 mb-4" />
-              <p className="text-neutral-500 font-medium">今日無新增聯絡事項</p>
+            <h2 className={STYLES.cardTitle}>歷次成績統計</h2>
+            <div className="h-[200px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={grades}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="subject" fontSize={10} axisLine={false} tickLine={false} />
+                  <YAxis fontSize={10} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="score" stroke="#000" strokeWidth={2} dot={{ r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
