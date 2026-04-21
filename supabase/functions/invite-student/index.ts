@@ -169,15 +169,19 @@ serve(async (req: Request) => {
 
   if (inviteErr) return jsonError(`邀請失敗：${inviteErr.message}`, 500);
 
-  // 觸發器（handle_new_user）會自動建立 profiles 列，
-  // 這裡補充額外欄位（full_name / class_name / student_no）
-  if (inviteData.user?.id) {
-    await adminClient.from('profiles').update({
-      full_name:  full_name ?? null,
-      class_name: class_name ?? null,
-      student_no: student_no ?? null,
-      email: normalizedEmail,
-    }).eq('id', inviteData.user.id);
+  // 只有當確定 Auth 成功建立了 user，才去動 profiles
+  if (inviteData?.user?.id) {
+    const { error: updateError } = await adminClient
+      .from('profiles')
+      .update({
+        full_name:  full_name ?? null,
+        class_name: class_name ?? null,
+        student_no: student_no ?? null,
+        email: normalizedEmail,
+      })
+      .eq('id', inviteData.user.id);
+
+    if (updateError) console.error('Profile 更新失敗:', updateError);
   }
 
   return jsonOk({ message: `邀請信已成功寄送至 ${normalizedEmail}`, action: 'invited' });

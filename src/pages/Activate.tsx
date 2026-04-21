@@ -1,178 +1,151 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Loader2, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { LAYOUT } from '../styles/layout';
 
 /**
  * [A] 視覺資訊備註
- * 頁面：帳號啟用 (Activate)
- * 角色：學生收到邀請信點擊連結後，Supabase 自動帶入 session，
- *       此頁負責將 profiles.status: 'invited' → 'active'，並寫入 activated_at。
- * 狀態機 UI：loading / success / already_active / error，純 CSS transition 無 GSAP。
- * 無 rAF 動畫，故無 GSAP_SELECTORS。
+ * 頁面：帳號啟用與密碼設定 (Activate & Set Password)
+ * 視覺：極簡黑白、1px Border、高對比語彙。
+ * 邏輯：處理邀請連結的 Session 驗證與初始密碼設定。
  */
 
-// [B] 樣式常數（強制排序：Layout → Visual → State → Responsive）
+// [B] 樣式常數 (定義在導出之前，確保作用域最優先讀取)
 const STYLES = {
-  wrapper:    'flex flex-col items-center justify-center min-h-[80vh] w-full px-6 py-20 bg-[var(--ui-bg)] theme-transition',
-  card:       'flex flex-col items-center w-full max-w-md p-10 bg-[var(--ui-white)] border border-[var(--ui-border)] shadow-sm theme-transition',
-  iconWrap:   'flex items-center justify-center w-20 h-20 rounded-full border border-[var(--ui-border)] mb-8 theme-transition',
-  title:      'text-2xl font-black tracking-tight text-[var(--brand-primary)] text-center mb-3 theme-transition',
-  desc:       'text-sm font-light text-[var(--text-sub)] text-center leading-relaxed mb-8 theme-transition',
-  button:     'w-full py-4 bg-[var(--brand-primary)] text-[var(--ui-white)] text-[10px] font-black tracking-[0.3em] uppercase transition-all duration-300 hover:bg-[var(--hsinyu-blue)] hover:shadow-lg active:scale-[0.98] theme-transition',
-  errorBox:   'mt-4 w-full px-4 py-3 bg-red-50 border border-red-200 text-xs text-red-600 text-center leading-relaxed',
-} as const;
+  wrapper:    'flex flex-col items-center justify-center min-h-screen w-full px-6 py-20 bg-white',
+  card:       'flex flex-col items-center w-full max-w-md p-10 bg-white border border-black shadow-sm',
+  iconWrap:   'flex items-center justify-center w-20 h-20 rounded-full border border-black mb-8',
+  title:      'text-2xl font-black tracking-tight text-black text-center mb-3 uppercase',
+  desc:       'text-sm text-gray-500 text-center leading-relaxed mb-8',
+  form:       'w-full space-y-6',
+  inputGroup: 'relative border-b border-black py-2 focus-within:border-gray-400 transition-colors',
+  input:      'appearance-none bg-transparent border-none w-full text-black mr-3 py-2 px-1 leading-tight focus:outline-none text-sm',
+  button:     'w-full py-4 bg-black text-white hover:bg-gray-800 transition-all uppercase tracking-widest text-xs font-bold disabled:opacity-50',
+  errorBox:   'mt-4 p-3 bg-red-50 border border-red-100 text-red-500 text-xs italic w-full'
+};
 
-type ActivateStatus = 'loading' | 'success' | 'already_active' | 'error';
-
-// [C] 元件主體
+// [C] 核心元件：使用具名導出 (Named Export) 以匹配 App.tsx
 export const Activate: React.FC = () => {
+  const [password, setPassword] = useState('');
+  const [status, setStatus] = useState<'loading' | 'form' | 'success' | 'error'>('loading');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [status, setStatus] = useState<ActivateStatus>('loading');
-  const [errorMsg, setErrorMsg] = useState('');
 
+  // [D] 初始身分檢查 (元件的記憶)
   useEffect(() => {
-    const run = async () => {
-      if (!supabase) {
-        setErrorMsg('Supabase 尚未設定，無法完成啟用。');
+    const initCheck = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        
+        // 成功抓取 Session 代表邀請連結有效
+        if (data.session) {
+          setStatus('form');
+        } else {
+          setStatus('error');
+          setErrorMsg('邀請連結已失效或已逾期。');
+        }
+      } catch (err: any) {
         setStatus('error');
-        return;
+        setErrorMsg(err.message || '驗證失敗');
       }
+    };
+    initCheck();
+  }, []);
 
-      // [視覺體驗] 邀請連結點擊後 Supabase 自動建立 session，此處直接取得
-      const { data: { session }, error: sessionErr } = await supabase.auth.getSession();
+  // [E] 連動效果：提交密碼並啟用帳號
+  const handleActivate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password.length < 6) {
+      setErrorMsg('密碼長度需至少 6 個字元');
+      return;
+    }
 
-      if (sessionErr || !session?.user) {
-        setErrorMsg('無法取得登入資訊，邀請連結可能已過期或無效，請聯絡管理員重新發送。');
-        setStatus('error');
-        return;
-      }
+    setStatus('loading');
+    try {
+      // 1. 更新使用者密碼
+      const { error: authError } = await supabase.auth.updateUser({ password });
+      if (authError) throw authError;
 
-      const uid = session.user.id;
-
-      // 讀取目前 profile 的啟用狀態
-      const { data: profile, error: profileErr } = await supabase
-        .from('profiles')
-        .select('status')
-        .eq('id', uid)
-        .single();
-
-      if (profileErr || !profile) {
-        setErrorMsg('找不到帳號資料，請聯絡管理員確認您的帳號是否已建立。');
-        setStatus('error');
-        return;
-      }
-
-      // 已是 active → 直接告知並準備導向
-      if (profile.status === 'active') {
-        setStatus('already_active');
-        return;
-      }
-
-      // 非 invited 狀態（suspended / archived）
-      if (profile.status !== 'invited') {
-        setErrorMsg(`帳號目前為「${profile.status}」狀態，無法啟用，請聯絡管理員。`);
-        setStatus('error');
-        return;
-      }
-
-      // [視覺體驗] invited → active，冪等防護：.eq('status', 'invited') 確保不重複觸發
-      const { error: updateErr } = await supabase
-        .from('profiles')
-        .update({
-          status: 'active',
-          activated_at: new Date().toISOString(),
-        })
-        .eq('id', uid)
-        .eq('status', 'invited');
-
-      if (updateErr) {
-        setErrorMsg(`啟用失敗：${updateErr.message}`);
-        setStatus('error');
-        return;
+      // 2. 更新 Profile 狀態為 active (轉正)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from('profiles')
+          .update({ status: 'active' })
+          .eq('id', user.id);
       }
 
       setStatus('success');
-    };
+      // 視覺停留 2 秒後跳轉
+      setTimeout(() => navigate('/dashboard'), 2000);
 
-    run();
-  }, []);
-
-  const goToDashboard = () => navigate('/dashboard');
-  const goToLogin    = () => navigate('/login');
-
-  // 狀態對應內容資料（DRY：集中管理，減少重複 JSX）
-  const STATE_CONTENT: Record<
-    Exclude<ActivateStatus, 'loading'>,
-    { icon: React.ReactNode; borderColor: string; title: string; desc: string; btnLabel: string; btnAction: () => void }
-  > = {
-    success: {
-      icon: <CheckCircle2 size={32} className="text-[var(--hsinyu-blue)]" aria-hidden="true" />,
-      borderColor: 'border-[var(--hsinyu-blue)]',
-      title: '啟用成功！',
-      desc:  '您的帳號已完成啟用，歡迎加入欣育文理數位學習平台。請點擊下方按鈕進入個人儀表板。',
-      btnLabel: '進入儀表板',
-      btnAction: goToDashboard,
-    },
-    already_active: {
-      icon: <CheckCircle2 size={32} className="text-[var(--hsinyu-blue)]" aria-hidden="true" />,
-      borderColor: 'border-[var(--hsinyu-blue)]',
-      title: '帳號已啟用',
-      desc:  '您的帳號先前已完成啟用，可直接進入儀表板。',
-      btnLabel: '進入儀表板',
-      btnAction: goToDashboard,
-    },
-    error: {
-      icon: <AlertCircle size={32} className="text-red-500" aria-hidden="true" />,
-      borderColor: 'border-red-300',
-      title: '啟用失敗',
-      desc:  '帳號啟用過程中發生問題，請確認邀請連結是否有效或聯絡管理員。',
-      btnLabel: '返回登入頁',
-      btnAction: goToLogin,
-    },
+    } catch (err: any) {
+      setStatus('error');
+      setErrorMsg(err.message || '啟用失敗');
+    }
   };
 
   return (
-    <section className={STYLES.wrapper} aria-label="帳號啟用頁面">
+    <main className={STYLES.wrapper} aria-label="Activate Account Page">
       <div className={STYLES.card}>
-
-        {/* Loading 狀態 */}
+        
+        {/* 狀態：處理中 */}
         {status === 'loading' && (
-          <>
+          <div className="flex flex-col items-center">
             <div className={STYLES.iconWrap}>
-              <Loader2 size={32} className="text-[var(--hsinyu-blue)] animate-spin" aria-hidden="true" />
+              <Loader2 className="animate-spin text-black" size={32} />
             </div>
-            <h1 className={STYLES.title}>帳號啟用中</h1>
-            <p className={STYLES.desc}>正在驗證您的身份並完成啟用，請稍候…</p>
+            <h1 className={STYLES.title}>PROCESSING</h1>
+          </div>
+        )}
+
+        {/* 狀態：設定密碼表單 */}
+        {status === 'form' && (
+          <>
+            <div className={STYLES.iconWrap}><Lock size={32} /></div>
+            <h1 className={STYLES.title}>SET PASSWORD</h1>
+            <p className={STYLES.desc}>請為您的帳號設定初始登入密碼。</p>
+            
+            <form onSubmit={handleActivate} className={STYLES.form}>
+              <div className={STYLES.inputGroup}>
+                <input
+                  type="password"
+                  placeholder="NEW PASSWORD"
+                  className={STYLES.input}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {errorMsg && <div className={STYLES.errorBox}>{errorMsg}</div>}
+              <button type="submit" className={STYLES.button}>ACTIVATE</button>
+            </form>
           </>
         )}
 
-        {/* 非 loading 狀態：以資料物件驅動，零重複 JSX */}
-        {status !== 'loading' && (() => {
-          const content = STATE_CONTENT[status];
-          return (
-            <>
-              <div className={`${STYLES.iconWrap} ${content.borderColor}`}>
-                {content.icon}
-              </div>
-              <h1 className={STYLES.title}>{content.title}</h1>
-              <p className={STYLES.desc}>{content.desc}</p>
-              {status === 'error' && errorMsg && (
-                <div className={STYLES.errorBox} role="alert">{errorMsg}</div>
-              )}
-              <button
-                onClick={content.btnAction}
-                className={`${STYLES.button} ${status === 'error' ? 'mt-8' : ''}`}
-                aria-label={content.btnLabel}
-              >
-                {content.btnLabel}
-              </button>
-            </>
-          );
-        })()}
+        {/* 狀態：成功 */}
+        {status === 'success' && (
+          <div className="flex flex-col items-center">
+            <div className={STYLES.iconWrap}><CheckCircle2 size={32} /></div>
+            <h1 className={STYLES.title}>SUCCESS</h1>
+            <p className={STYLES.desc}>密碼設定成功，即將跳轉...</p>
+          </div>
+        )}
+
+        {/* 狀態：失敗 */}
+        {status === 'error' && (
+          <div className="flex flex-col items-center">
+            <div className={`${STYLES.iconWrap} border-red-500`}>
+              <AlertCircle size={32} className="text-red-500" />
+            </div>
+            <h1 className={STYLES.title}>ERROR</h1>
+            <p className={STYLES.desc}>{errorMsg}</p>
+            <button onClick={() => navigate('/login')} className={STYLES.button}>BACK TO LOGIN</button>
+          </div>
+        )}
 
       </div>
-    </section>
+    </main>
   );
 };
