@@ -140,7 +140,7 @@ const STYLES = {
     'mb-4 px-4 py-3 bg-red-50 border border-red-200 text-xs text-red-600 text-center',
 } as const;
 
-const PER_PAGE_ANNOUNCE = 10;
+const PER_PAGE_ANNOUNCE = 5;
 const PER_PAGE_MANAGE_GRADES = 10;
 const PER_PAGE_STUDENT_GRADES = 5;
 
@@ -745,61 +745,61 @@ export const Dashboard: React.FC = () => {
                   transition={{ duration: 0.25 }}
                 >
                   {announcements.length > 0 ? (
-                    <>
-                      {announcements.map((announcement) => {
-                        const isRead = readIds.includes(announcement.id);
-                        return (
-                          <div
-                            key={announcement.id}
-                            className={`${STYLES.announceItem} ${isRead ? 'opacity-60' : ''}`}
-                            onClick={() => handleOpenAnnouncement(announcement)}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter' || event.key === ' ') {
-                                event.preventDefault();
-                                handleOpenAnnouncement(announcement);
-                              }
-                            }}
-                            role="button"
-                            tabIndex={0}
-                          >
-                            <div className="flex flex-col">
-                              <div className="flex items-center">
-                                {announcement.priority && <span className={STYLES.priorityTag}>置頂</span>}
-                                <span className={STYLES.announceTitle}>{announcement.title}</span>
-                              </div>
-                              <span className={STYLES.announceDate}>{formatDate(announcement.created_at)}</span>
+                    announcements.map((announcement) => {
+                      const isRead = readIds.includes(announcement.id);
+                      return (
+                        <div
+                          key={announcement.id}
+                          className={`${STYLES.announceItem} ${isRead ? 'opacity-60' : ''}`}
+                          onClick={() => handleOpenAnnouncement(announcement)}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              handleOpenAnnouncement(announcement);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <div className="flex flex-col">
+                            <div className="flex items-center">
+                              {announcement.priority && <span className={STYLES.priorityTag}>置頂</span>}
+                              <span className={STYLES.announceTitle}>{announcement.title}</span>
                             </div>
-                            {!isRead && <div className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)]" />}
+                            <span className={STYLES.announceDate}>{formatDate(announcement.created_at)}</span>
                           </div>
-                        );
-                      })}
-
-                      <div className="flex justify-center items-center gap-4 mt-8 pt-4 border-t border-[var(--ui-border)]">
-                        <button
-                          disabled={announcePage === 0}
-                          onClick={() => setAnnouncePage((prev) => prev - 1)}
-                          className={STYLES.pageBtn}
-                        >
-                          上一頁
-                        </button>
-                        <span className="text-[10px] font-mono tracking-widest uppercase">
-                          {announcePage + 1} / {Math.max(1, Math.ceil(totalAnnounce / PER_PAGE_ANNOUNCE))}
-                        </span>
-                        <button
-                          disabled={(announcePage + 1) * PER_PAGE_ANNOUNCE >= totalAnnounce}
-                          onClick={() => setAnnouncePage((prev) => prev + 1)}
-                          className={STYLES.pageBtn}
-                        >
-                          下一頁
-                        </button>
-                      </div>
-                    </>
+                          {!isRead && <div className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)]" />}
+                        </div>
+                      );
+                    })
                   ) : (
                     <div className={STYLES.emptyText}>目前沒有公告。</div>
                   )}
                 </motion.div>
               </AnimatePresence>
             </div>
+
+            {announcements.length > 0 && (
+              <div className="flex justify-center items-center gap-4 mt-4 pt-4 border-t border-[var(--ui-border)]">
+                <button
+                  disabled={announcePage === 0}
+                  onClick={() => setAnnouncePage((prev) => prev - 1)}
+                  className={STYLES.pageBtn}
+                >
+                  上一頁
+                </button>
+                <span className="text-[10px] font-mono tracking-widest uppercase">
+                  {announcePage + 1} / {Math.max(1, Math.ceil(totalAnnounce / PER_PAGE_ANNOUNCE))}
+                </span>
+                <button
+                  disabled={(announcePage + 1) * PER_PAGE_ANNOUNCE >= totalAnnounce}
+                  onClick={() => setAnnouncePage((prev) => prev + 1)}
+                  className={STYLES.pageBtn}
+                >
+                  下一頁
+                </button>
+              </div>
+            )}
           </section>
 
           {isAdmin && (
