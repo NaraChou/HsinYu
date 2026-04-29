@@ -4,7 +4,7 @@ import { LAYOUT } from '../../styles/layout';
 
 /**
  * [A] 視覺資訊備註
- * 元件角色：Marquee Vision 背景氛圍區塊。展示欣育教育哲學。
+ * 元件角色：Marquee Vision 背景氛圍區塊。展示星育教育哲學。
  * 視覺特性：無限循環的橫向滾動文字（1px空心、低對比）。
  * GSAP + 效能：
  *  - 實作無縫循環 (xPercent: -50)。
@@ -12,7 +12,7 @@ import { LAYOUT } from '../../styles/layout';
  */
 
 // 無縫字串 (重複兩次以確保足夠寬度)
-const PHRASE = "GROWTH  /  FUTURE  /  ACCOMPANY  /  HSINYU  /  ";
+const PHRASE = "GROWTH  /  FUTURE  /  ACCOMPANY  /  H-ACADEMY  /  ";
 
 // [B-0] GSAP 白名單
 const GSAP_SELECTORS = {
@@ -31,7 +31,7 @@ const STYLES = {
   
   // Content Layer (z-10)
   contentBox:       `${LAYOUT.colCenterText} relative z-10 max-w-3xl px-6 mix-blend-normal`,
-  title:            'text-3xl font-bold tracking-widest text-[var(--hsinyu-blue)] leading-tight mb-6 theme-transition md:text-4xl lg:text-5xl',
+  title:            'text-3xl font-bold tracking-widest text-[var(--brand-blue)] leading-tight mb-6 theme-transition md:text-4xl lg:text-5xl',
   desc:             'text-base font-light text-[var(--text-sub)] leading-loose tracking-[0.1em] theme-transition md:text-lg lg:text-xl',
 } as const;
 

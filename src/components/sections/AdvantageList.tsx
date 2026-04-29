@@ -6,7 +6,7 @@ import { LAYOUT } from '../../styles/layout';
 
 /**
  * [A] 視覺資訊備註
- * 元件角色：核心優勢 (AdvantageList)。展示欣育文理的三大核心優勢。
+ * 元件角色：核心優勢 (AdvantageList)。展示星育文理的三大核心優勢。
  * 佈局特性：極簡白背景，三欄式佈局，帶有超大標題序號。
  * GSAP Selectors：
  *  - advantage-card: 使用 ScrollTrigger 控制由下而上的瀑布流進場。
@@ -36,10 +36,10 @@ const STYLES = {
   grid:        'grid grid-cols-1 gap-8 w-full max-w-7xl mx-auto md:grid-cols-3 lg:gap-12',
 
   // Card (group 讓子元素連動 hover)
-  card:        'group flex flex-col p-8 border border-[var(--ui-border)] rounded-2xl bg-transparent theme-transition duration-500 hover:border-[var(--hsinyu-blue)] hover:bg-[var(--ui-white)] hover:shadow-2xl md:p-10',
+  card:        'group flex flex-col p-8 border border-[var(--ui-border)] rounded-2xl bg-transparent theme-transition duration-500 hover:border-[var(--brand-blue)] hover:bg-[var(--ui-white)] hover:shadow-2xl md:p-10',
 
   // Number (空心字效果 → hover 時填滿色)
-  number:      'text-7xl font-black text-transparent [-webkit-text-stroke:1px_var(--ui-border)] theme-transition duration-500 group-hover:text-[var(--hsinyu-blue)] group-hover:[-webkit-text-stroke:1px_var(--hsinyu-blue)] group-hover:-translate-y-2 md:text-8xl',
+  number:      'text-7xl font-black text-transparent [-webkit-text-stroke:1px_var(--ui-border)] theme-transition duration-500 group-hover:text-[var(--brand-blue)] group-hover:[-webkit-text-stroke:1px_var(--brand-blue)] group-hover:-translate-y-2 md:text-8xl',
 
   // Content (hover 時內容微幅上推)
   contentBox:  'flex flex-col mt-auto pt-16 theme-transition duration-500 group-hover:-translate-y-2',

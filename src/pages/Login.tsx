@@ -26,11 +26,11 @@ const STYLES = {
   inputGroup: 'flex flex-col gap-2',
   label:      'text-xs font-bold tracking-widest text-[var(--text-main)] uppercase theme-transition',
   // [P1 FIX] transition- / focus: 歸入 State 區
-  input:      'w-full px-4 py-3 bg-[var(--ui-white)] border border-[var(--ui-border)] rounded-xl text-sm text-[var(--text-main)] theme-transition transition-colors duration-300 focus:border-[var(--hsinyu-blue)] focus:outline-none focus:ring-1 focus:ring-[var(--hsinyu-blue)]',
+  input:      'w-full px-4 py-3 bg-[var(--ui-white)] border border-[var(--ui-border)] rounded-xl text-sm text-[var(--text-main)] theme-transition transition-colors duration-300 focus:border-[var(--brand-blue)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-blue)]',
 
   // Button
   // [P1 FIX] transition- / hover: / active: / disabled: 統一歸入 State 區尾端
-  button:     'flex w-full items-center justify-center mt-2 py-4 bg-[var(--brand-primary)] rounded-xl text-[var(--ui-white)] text-sm font-bold tracking-widest transition-all duration-300 hover:bg-[var(--hsinyu-blue)] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50',
+  button:     'flex w-full items-center justify-center mt-2 py-4 bg-[var(--brand-primary)] rounded-xl text-[var(--ui-white)] text-sm font-bold tracking-widest transition-all duration-300 hover:bg-[var(--brand-blue)] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50',
 
   // Error message
   // [P1 FIX] 硬編碼 #EF4444 系列 → var(--color-danger-*)

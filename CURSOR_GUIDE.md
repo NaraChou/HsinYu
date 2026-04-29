@@ -1,14 +1,14 @@
 # 🪄 Kiki Design x Cursor Agent: 專案級 AI 協作手冊 (精細版)
 
 > **規範版本**：`v2.1.0` (含 Supabase RLS、路由、部署與型別規範)
-> **核心理念**：本手冊為開發者專用，詳細記錄了 HsinYu 專案的底層結構、資料流向與安全邏輯。
+> **核心理念**：本手冊為開發者專用，詳細記錄了 **星育文理 H-Academy** 專案的底層結構、資料流向與安全邏輯。
 
 ---
 
 ## 🗂️ 專案架構樹 (精細開發版)
 
 ```text
-HsinYu/                                            # 專案根目錄
+H-Academy/                                         # 專案根目錄
 ├── .cursor/                                       # [01] Cursor 規則系統
 │   └── rules/                                     # AI 規則卡 (00-governance ~ 05-commands)
 ├── supabase/                                      # [02] Supabase 資料庫層
@@ -57,7 +57,7 @@ active  ──(畢業/停用)───────────▶ archived
 | 路徑 | 元件 | 說明 |
 |---|---|---|
 | `/` | `Home` | 首頁 |
-| `/about` | `About` | 關於欣育 |
+| `/about` | `About` | 關於星育 |
 | `/education` | `Education` | 全齡課程 |
 | `/campus` | `Campus` | 分校榮譽 |
 | `/news` | `News` | 公告中心 |
@@ -107,5 +107,5 @@ npx tsc --noEmit
 *   **`@SQL_V2_GUIDE.md`**：修改資料庫或 Dashboard 時，強迫 AI 讀取此文件。
 
 ---
-**欣育文理 HsinYu — 首席視覺轉譯工程師 Manus 製作**
+**星育文理 H-Academy — 首席視覺轉譯工程師 Manus 製作**
 *版本：v2.1.0*

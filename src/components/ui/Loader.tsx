@@ -45,7 +45,7 @@ export const Loader: React.FC = () => {
       <div className="relative w-32 h-32 flex items-center justify-center">
         {/* 1px 呼吸圓圈 (模擬 Tailwind dark:border-white/10) */}
         <div className="absolute inset-0 border border-[var(--brand-primary)] opacity-20 rounded-full animate-ping theme-transition" />
-        <div className="absolute inset-0 border border-[var(--hsinyu-blue)] rounded-full animate-pulse theme-transition" />
+        <div className="absolute inset-0 border border-[var(--brand-blue)] rounded-full animate-pulse theme-transition" />
         
         {/* 進度數字 */}
         <span ref={counterRef} className="text-2xl font-light tracking-tighter text-[var(--brand-primary)] theme-transition counter-number">
@@ -53,7 +53,7 @@ export const Loader: React.FC = () => {
         </span>
       </div>
       <p className="mt-8 text-[10px] tracking-[0.5em] text-[var(--text-sub)] uppercase theme-transition">
-        Loading Hsinyu Digital Experience
+        Loading H-Academy Digital Experience
       </p>
     </div>
   );

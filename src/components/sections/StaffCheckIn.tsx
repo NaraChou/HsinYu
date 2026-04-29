@@ -33,8 +33,8 @@ interface StaffCheckInProps {
 }
 
 const SCHOOL_LOCATION = {
-  lat: 24.1751304214824,
-  lng: 120.67276787047567,
+  lat: 24.137, // 範例座標
+  lng: 120.686, // 範例座標
   radiusMeters: 100,
 };
 
@@ -163,7 +163,7 @@ export const StaffCheckIn: React.FC<StaffCheckInProps> = ({ onToast }) => {
         <MapPin size={14} />
         {distanceMeters !== null ? (
           <span>
-            目前距離校區（北屯區水湳里018鄰中清東一街３１之４號）{Math.round(distanceMeters)}公尺（範圍 {SCHOOL_LOCATION.radiusMeters}公尺）
+            目前距離校區（台中市某區範例路 88 號）{Math.round(distanceMeters)}公尺（範圍 {SCHOOL_LOCATION.radiusMeters}公尺）
           </span>
         ) : (
           <span>尚未取得定位</span>

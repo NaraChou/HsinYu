@@ -163,7 +163,7 @@ export const Navbar: React.FC = () => {
       <header className={`${STYLES.header} ${STYLES.glass} ${isScrolled ? STYLES.scrolled : STYLES.default}`}>
         <Link to="/" className={STYLES.logo}>
           <Leaf className={STYLES.logoIcon} size={28} aria-hidden="true" />
-          <span className={STYLES.logoText}>欣育</span>
+          <span className={STYLES.logoText}>星育</span>
         </Link>
 
         <div className={STYLES.rightSide}>

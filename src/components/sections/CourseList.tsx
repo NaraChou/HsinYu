@@ -3,7 +3,7 @@ import { COURSES_DATA } from '../../data/appData';
 
 /**
  * [A] 視覺資訊備註
- * 元件角色：欣育文理 課程介紹區塊 (Course Sections)。
+ * 元件角色：星育文理 課程介紹區塊 (Course Sections)。
  * 視覺特性：運用 RWD (Mobile First) 針對不同設備優化體驗。
  * 手機版使用垂直推疊 (flex-col)，平板以上展開均分網格 (grid-cols-3)。
  * Hover 互動採用 css group-hover 完成輕盈升級感。

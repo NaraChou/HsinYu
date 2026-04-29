@@ -144,7 +144,7 @@ export const EducationPage: React.FC = () => {
 
   return (
     <div className={STYLES.wrapper} ref={containerRef}>
-      <h1 className="sr-only">欣育全齡課程體系</h1>
+      <h1 className="sr-only">星育全齡課程體系</h1>
       
       {/* Scroll Spy Dot Navigation */}
       <nav className={STYLES.pageNav} aria-label="全齡課程快捷導航">

@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * [A] 視覺資訊備註
- * 角色：公告中心 (News Page)
+ * 角色：公告中心 (News Page) - 星育文理 H-Academy
  * 視覺：黑白高對比、極簡卡片、分頁瀏覽。
  *
  * P1 修正 (2026-04-25)：

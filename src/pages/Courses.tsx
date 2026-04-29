@@ -34,7 +34,7 @@ const STYLES = {
   grid: 'grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 w-full max-w-6xl mx-auto px-6 mb-32',
 
   // Card
-  card: 'group relative flex flex-col p-8 bg-[var(--ui-bg)] border border-[var(--ui-border)] theme-transition hover:border-[var(--hsinyu-blue)] transition-colors duration-500 overflow-hidden',
+  card: 'group relative flex flex-col p-8 bg-[var(--ui-bg)] border border-[var(--ui-border)] theme-transition hover:border-[var(--brand-blue)] transition-colors duration-500 overflow-hidden',
   cardHeader: 'flex justify-between items-start mb-6',
   cardCategory: 'px-3 py-1 text-xs tracking-wider rounded-full bg-[var(--ui-border)] text-[var(--text-main)] theme-transition',
   cardLevel: 'text-xs text-[var(--text-sub)]',
@@ -48,7 +48,7 @@ const STYLES = {
   detailContent: 'text-sm font-medium text-[var(--text-main)] theme-transition',
   
   // Outline stretching effect
-  hoverLine: 'absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-[var(--hsinyu-blue)] transition-all duration-500 group-hover:w-full',
+  hoverLine: 'absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-[var(--brand-blue)] transition-all duration-500 group-hover:w-full',
 } as const;
 
 export const CoursesPage: React.FC = () => {

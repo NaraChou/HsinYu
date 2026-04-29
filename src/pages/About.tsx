@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * [A] 視覺資訊備註
- * 關於欣育 (About Page)
+ * 關於星育 (About Page)
  * 負責呈現品牌歷史沿革與空間視覺。
  * 
  * GSAP 白名單：
@@ -115,9 +115,9 @@ export const AboutPage: React.FC = () => {
       {/* Hero Section */}
       <section className={STYLES.hero}>
         <div className={STYLES.heroWatermark}>
-          <span className="text-[20rem] font-black tracking-tighter mix-blend-overlay opacity-10">HSINYU</span>
+          <span className="text-[20rem] font-black tracking-tighter mix-blend-overlay opacity-10 uppercase">H-Academy</span>
         </div>
-        <h1 className={STYLES.heroTitle}>ABOUT HSINYU</h1>
+        <h1 className={STYLES.heroTitle}>ABOUT H-Academy</h1>
         <div className={STYLES.heroSubtitle}>Since 2016</div>
       </section>
 

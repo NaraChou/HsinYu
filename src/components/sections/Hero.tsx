@@ -26,12 +26,12 @@ const STYLES = {
   wrapper:     'relative flex flex-col justify-center min-h-[80vh] w-full mb-16 overflow-hidden bg-[var(--ui-white)] border border-[var(--ui-border)] rounded-2xl theme-transition',
   container:   `${LAYOUT.colCenterText} relative z-10 px-6`,
   title:       'text-5xl font-bold tracking-tighter text-[var(--brand-primary)] theme-transition md:text-7xl lg:text-8xl',
-  brandBlue:   'text-[var(--hsinyu-blue)] theme-transition',
+  brandBlue:   'text-[var(--brand-blue)] theme-transition',
   description: 'mt-8 text-base font-light tracking-[0.3em] text-neutral-400 md:text-lg lg:text-xl',
-  button:      'mt-12 px-10 py-4 bg-[var(--hsinyu-blue)] text-[var(--theme-white)] rounded-full transition-all duration-300 theme-transition hover:bg-[var(--brand-primary)] hover:shadow-2xl active:scale-95',
+  button:      'mt-12 px-10 py-4 bg-[var(--brand-blue)] text-[var(--theme-white)] rounded-full transition-all duration-300 theme-transition hover:bg-[var(--brand-primary)] hover:shadow-2xl active:scale-95',
   
   // 抽象幾何葉片視覺樣式
-  leafUI:      'absolute top-1/4 right-[10%] w-32 h-32 border border-[var(--hsinyu-blue)] rounded-bl-[100px] rounded-tr-[100px] opacity-10 pointer-events-none theme-transition md:w-48 md:h-48 lg:w-64 lg:h-64'
+  leafUI:      'absolute top-1/4 right-[10%] w-32 h-32 border border-[var(--brand-blue)] rounded-bl-[100px] rounded-tr-[100px] opacity-10 pointer-events-none theme-transition md:w-48 md:h-48 lg:w-64 lg:h-64'
 } as const;
 
 // [C] 元件主體
@@ -117,7 +117,7 @@ export const Hero: React.FC = () => {
 
       <div className={STYLES.container}>
         <h1 className={`${GSAP_SELECTORS.title} ${STYLES.title}`}>
-          欣育文理 <span className={STYLES.brandBlue}>Hsinyu</span>
+          星育文理 <span className={STYLES.brandBlue}>H-Academy</span>
         </h1>
         
         <p className={`${GSAP_SELECTORS.sub} ${STYLES.description}`}>

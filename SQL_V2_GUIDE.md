@@ -1,6 +1,6 @@
-# HsinYu 資料庫安全與功能腳本 (v2.0) 全方位教學手冊
+# 星育文理 H-Academy 資料庫安全與功能腳本 (v2.0) 全方位教學手冊
 
-本文件旨在解釋 HsinYu 專案中所有 SQL 腳本的內部邏輯、資安防禦機制以及日常維運操作。本手冊遵循 **Kiki Design System v2.0.0** 的 P0 安全標準，整合了核心安全地基與各項業務功能。
+本文件旨在解釋 **星育文理 H-Academy** 專案中所有 SQL 腳本的內部邏輯、資安防禦機制以及日常維運操作。本手冊遵循 **Kiki Design System v2.0.0** 的 P0 安全標準，整合了核心安全地基與各項業務功能。
 
 ---
 
@@ -9,7 +9,7 @@
 ### 1.1 公告系統與雙重判定 (Announcements)
 *   **邏輯**：重建 `announcements` 表並強制開啟 **RLS (Row Level Security)**。
 *   **安全防線**：
-    *   **Public Read**：允許所有人（含訪客）讀取公告，確保補習班資訊透明。
+    *   **Public Read**：允許所有人（含訪客）讀取公告，確保資訊透明。
     *   **Admin Manage**：使用「雙重判定邏輯」同時檢查 JWT 根目錄與 `app_metadata`。只要 `role` 為 `admin` 即可管理。
 *   **優化點**：解決了 Supabase 不同版本間角色路徑不一致的問題。
 
@@ -73,4 +73,5 @@ update public.profiles set status = 'suspended' where email = 'student@example.c
 | **資料遺失** | **注意** | 執行 `final_security_v2` 會重建公告表，請先備份重要公告。 |
 
 ---
+**星育文理 H-Academy — 首席視覺轉譯工程師 Manus 製作**
 *文件版本：2024-04-27 v2.1 (深度整合版)*

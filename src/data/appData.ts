@@ -1,5 +1,5 @@
 export const NAV_ITEMS = [
-  { label: '關於欣育', href: '/about' },
+  { label: '關於星育', href: '/about' },
   {
     label: '課程體系',
     href: '/education',
@@ -164,7 +164,7 @@ export const FOOTER_LINKS = [
 ];
 
 export const HISTORY_DATA = [
-  { year: '2016', title: '欣育文理創立',    desc: '秉持「啟發取代填鴨」的理念，於台北設立首家旗艦校區。' },
+  { year: '2016', title: '星育文理創立',    desc: '秉持「啟發取代填鴨」的理念，設立首家數位旗艦校區。' },
   { year: '2018', title: '導入 AI 診斷',    desc: '首創全智動弱點分析系統，針對學生盲點進行精準打擊。' },
   { year: '2020', title: '鼠年大吉，無懼挑戰', desc: '推出全面數位化線上課程，確保學習不中斷，開啟虛實融合教育。' },
   { year: '2022', title: '雙語素養躍進',    desc: '接軌 108 課綱核心素養，拓展情境式英語培力專案。' },
@@ -194,17 +194,17 @@ export const CAMPUS_DATA = {
   locations: [
     {
       id: 'c1',
-      name: '台北信義旗艦校',
-      address: '台北市信義區忠孝東路五段 100 號',
-      tel: '02-2345-6789',
+      name: '星育數位旗艦校',
+      address: '台中市某區範例路 88 號',
+      tel: '04-2345-XXXX',
       mapUrl: 'https://maps.google.com/?q=台北市信義區忠孝東路五段100號',
       features: ['高中部', '國中部', 'AI 教室']
     },
     {
       id: 'c2',
-      name: '新北板橋精英校',
-      address: '新北市板橋區文化路一段 200 號',
-      tel: '02-8901-2345',
+      name: '星育創新精英校',
+      address: '台北市某區範例路 168 號',
+      tel: '02-8901-XXXX',
       mapUrl: 'https://maps.google.com/?q=新北市板橋區文化路一段200號',
       features: ['國小部', '國中部', '科學實驗室']
     }

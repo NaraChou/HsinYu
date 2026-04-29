@@ -4,7 +4,7 @@ import { FOOTER_LINKS, SOCIAL_LINKS } from '../../data/appData';
 
 /**
  * [A] 視覺資訊備註
- * 元件角色：欣育文理 頁脚 (Footer)。
+ * 元件角色：星育文理 頁脚 (Footer)。
  * 視覺特性：純潔背景搭配 1px border-t 展現工藝感。
  * 狀態互動：Hover 連結時不改色，而是觸發底部的 1px 黑線由中心往外延展。
  */
@@ -44,7 +44,7 @@ export const Footer: React.FC = () => {
         {/* Top Section */}
         <div className={STYLES.topSection}>
           <div className={STYLES.leftCol}>
-            <h2 className={STYLES.logo}>欣育文理 Hsinyu</h2>
+            <h2 className={STYLES.logo}>星育文理 H-Academy</h2>
             <p className={STYLES.slogan}>在 AI 時代，給孩子最溫暖的成長導航</p>
           </div>
           
@@ -63,9 +63,14 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Section */}
         <div className={STYLES.bottomSection}>
-          <p className={STYLES.copyright}>
-            &copy; {new Date().getFullYear()} Kiki Design System. All rights reserved.
-          </p>
+          <div>
+            <p className={STYLES.copyright}>
+              &copy; {new Date().getFullYear()} Kiki Design System. All rights reserved.
+            </p>
+            <p className="mt-2 text-xs opacity-60">
+              本網站僅供個人技術練習與視覺開發 Demo 使用，非官方正式網站。
+            </p>
+          </div>
           
           <nav aria-label="社群媒體連結">
             <ul className={STYLES.socialNav}>

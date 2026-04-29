@@ -1,4 +1,4 @@
-# 欣育文理 HsinYu — 數位學習平台
+# 星育文理 H-Academy — 數位學習平台 (去識別化技術研究專案)
 
 > 遵循 **Kiki Design System v2.0.0** 架構規範開發。
 > 一個整合 React、TypeScript 與 Supabase 的補習班管理系統，專注於極簡美學與高效能。
@@ -6,14 +6,16 @@
 ---
 
 ## 🌟 專案概述
-欣育文理數位學習平台是一個為現代補習班設計的全方位管理解決方案。透過極簡的介面設計與強大的後端整合，提供學生、老師及管理人員流暢的數位體驗。
+**星育文理 H-Academy** 數位學習平台是一個為現代補習班設計的全方位管理解決方案。
+
+> **⚠️ 免責聲明**：本專案為針對教育產業數位化轉型之技術研究與視覺開發 Demo 使用。專案中所有名稱、地址、聯絡資訊皆為去識別化處理後之虛擬資料，非官方正式網站。
 
 ---
 
 ## 📂 專案架構 (精簡版)
 
 ```text
-HsinYu/
+H-Academy/
 ├── supabase/              # 資料庫定義與 Edge Functions
 │   └── migrations/        # 核心資料庫安全腳本 (SQL 備份)
 ├── src/
@@ -53,5 +55,5 @@ npm run dev
 *   [開發者精細架構指南 (CURSOR_GUIDE.md)](./CURSOR_GUIDE.md)
 
 ---
-**欣育文理 HsinYu — 數位學習平台**
+**星育文理 H-Academy — 數位學習平台**
 *Designed by Kiki Design System*

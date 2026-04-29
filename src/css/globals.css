@@ -5,7 +5,7 @@
     --theme-white:   #FFFFFF;
     --brand-primary: var(--theme-black);
     --brand-accent:  #3B82F6;
-    --hsinyu-blue:   #1A4B8F;
+    --brand-blue:    #1A4B8F;
     --text-main:     var(--theme-black);
     --text-sub:      #64748B;
     --ui-border:     #E2E8F0;
@@ -44,7 +44,7 @@
     --theme-white:   #0A0A0A;
     --brand-primary: var(--theme-black);
     --brand-accent:  #60A5FA;
-    --hsinyu-blue:   #5C95FD;     /* 深色下提高亮度，保持科技感與可讀性 */
+    --brand-blue:    #5C95FD;     /* 深色下提高亮度，保持科技感與可讀性 */
     --text-main:     var(--theme-black);
     --text-sub:      #9CA3AF;     /* P0：對比度達標 WCAG AA             */
     --ui-border:     #27272A;

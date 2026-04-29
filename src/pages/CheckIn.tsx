@@ -117,7 +117,7 @@ export const CheckIn = () => {
       if (checkInError) throw checkInError;
 
       setStatus('success');
-      setMessage('簽到成功！歡迎來到欣育。');
+      setMessage('簽到成功！歡迎來到星育。');
     } catch (err) {
       setStatus('error');
       setMessage('系統連線異常，請聯繫管理員。');
