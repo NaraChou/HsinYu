@@ -13,7 +13,14 @@ import { LAYOUT } from '../styles/layout';
  * 規範修正 (2026-04-27)：
  * - wrapperRef 型別從 useRef<HTMLElement>（搭配 as any）
  *   改為 useRef<HTMLDivElement>，消除 TypeScript any 逃生
- * - 規範禁止在元件內使用 @ts-ignore 或 any
+ *
+ * 效能修正 (2026-05-01，依據 Risk Report)：
+ * - courseSyllabus 展開動畫：max-height → grid-template-rows: 0fr → 1fr
+ *   原本 max-height 每 frame 觸發 Layout Reflow；
+ *   grid-template-rows 只觸發 Composite，GPU 友善且動畫速度自然。
+ * - scrollToHash：移除硬編碼 - 80 offset，改用 scrollIntoView()
+ *   佈局 offset 邏輯回歸 CSS（style.css 的 scroll-margin-top: 80px），
+ *   Header 高度變動時只需修改 CSS 一處，不再散落各元件。
  */
 
 gsap.registerPlugin(ScrollTrigger);
@@ -50,7 +57,9 @@ const STYLES = {
   courseMeta:      'flex flex-col gap-3 mt-auto pt-6 border-t border-[var(--ui-border)]',
   courseMetaRow:   'flex items-center gap-2 text-xs text-[var(--text-sub)] theme-transition',
   coursePrice:     'text-sm font-bold text-[var(--brand-primary)] theme-transition',
-  courseSyllabus:  'mt-6 pt-6 border-t border-[var(--ui-border)] opacity-0 max-h-0 overflow-hidden transition-all duration-500 group-hover:opacity-100 group-hover:max-h-[200px]',
+  // [效能修正] max-height → grid-template-rows 展開動畫（無 Reflow）
+  syllabusOuter:   'grid mt-6 pt-6 border-t border-[var(--ui-border)] opacity-0 transition-[grid-template-rows,opacity] duration-500 ease-out [grid-template-rows:0fr] group-hover:[grid-template-rows:1fr] group-hover:opacity-100',
+  syllabusInner:   'overflow-hidden',
   syllabusTitle:   'text-[10px] font-black tracking-[0.2em] text-[var(--text-sub)] uppercase mb-3',
   syllabusItem:    'flex items-center gap-2 text-xs text-[var(--text-sub)] mb-2 theme-transition',
   syllabusDot:     'w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)] shrink-0 theme-transition',
@@ -63,12 +72,11 @@ export const Courses: React.FC = () => {
 
   useEffect(() => {
     if (location.hash) {
+      // [效能修正] scrollIntoView + CSS scroll-margin-top: 80px（style.css）
+      // 移除硬編碼 -80，Header 高度變動只需改 CSS 一處
       const id = setTimeout(() => {
         const el = document.getElementById(location.hash.replace('#', ''));
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top, behavior: 'smooth' });
-        }
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
       return () => clearTimeout(id);
     } else {
@@ -146,15 +154,17 @@ export const Courses: React.FC = () => {
                   <div className={STYLES.coursePrice}>{course.price}</div>
                 </div>
 
-                {/* Hover 展開課綱 */}
-                <div className={STYLES.courseSyllabus}>
-                  <div className={STYLES.syllabusTitle}>週次課綱</div>
-                  {course.syllabus.map((item, idx) => (
-                    <div key={idx} className={STYLES.syllabusItem}>
-                      <span className={STYLES.syllabusDot} aria-hidden="true" />
-                      {item}
-                    </div>
-                  ))}
+                {/* Hover 展開課綱（grid-template-rows 無 Reflow 版） */}
+                <div className={STYLES.syllabusOuter}>
+                  <div className={STYLES.syllabusInner}>
+                    <div className={STYLES.syllabusTitle}>週次課綱</div>
+                    {course.syllabus.map((item, idx) => (
+                      <div key={idx} className={STYLES.syllabusItem}>
+                        <span className={STYLES.syllabusDot} aria-hidden="true" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </article>
             ))}

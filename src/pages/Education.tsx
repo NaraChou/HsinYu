@@ -15,6 +15,10 @@ gsap.registerPlugin(ScrollTrigger);
  *
  * 規範修正 (2026-04-27)：
  * - scrollToHash 的 setTimeout 補 clearTimeout cleanup
+ *
+ * 效能修正 (2026-05-01，依據 Risk Report)：
+ * - scrollToHash 移除硬編碼 -80 offset，改用 el.scrollIntoView()
+ *   佈局 offset 邏輯回歸 CSS（style.css scroll-margin-top: 80px）
  *   原本路由快速切換時，timer 在元件 unmount 後仍執行 scrollToHash，
  *   對已卸載的 DOM 操作造成潛在錯誤。
  *   修正：儲存 timer id → cleanup 時 clearTimeout。
@@ -90,12 +94,11 @@ export const EducationPage: React.FC = () => {
     return () => { ctx.revert(); ScrollTrigger.refresh(); };
   }, []);
 
+  // [效能修正] scrollIntoView + CSS scroll-margin-top: 80px（style.css）
+  // 移除硬編碼 -80，Header 高度變動只需改 CSS 一處
   const scrollToHash = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   // [修正] hash 變化時 setTimeout 補 clearTimeout cleanup

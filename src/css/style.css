@@ -1,7 +1,9 @@
 /* style.css: 結構與重置 */
+
 html, body {
-  /* 原本的 scroll-behavior: smooth 會導致與 GSAP ScrollToPlugin 衝突產生 1 秒的起步延遲，已移除 */
+  /* scroll-behavior: smooth 移除，避免與 GSAP ScrollToPlugin 衝突 */
 }
+
 .app-scrollbar {
   overflow-y: auto;
 }
@@ -11,4 +13,33 @@ html, body {
 .app-scrollbar::-webkit-scrollbar-thumb {
   background: var(--ui-border);
   border-radius: 3px;
+}
+
+/* ─── Scroll Anchor Offset ──────────────────────────────────────────
+ * 統一處理錨點跳轉時的 Header 避讓。
+ * 原本各元件在 JS 中硬編碼 `getBoundingClientRect().top - 80`，
+ * Header 高度一旦變動就需手動同步多個檔案。
+ *
+ * 規範修正 (2026-05-01)：
+ * - 將 offset 邏輯回歸 CSS，JS 只需 element.scrollIntoView({ behavior:'smooth' })
+ * - 全站 section[id] 與 [data-scroll-anchor] 元素統一套用
+ * - 數值 80px = Header 高度（py-6 約 48px + 安全緩衝 32px）
+ * - 若未來 Header 高度變動，只需在此處修改一次
+ * ──────────────────────────────────────────────────────────────────── */
+section[id],
+[data-scroll-anchor] {
+  scroll-margin-top: 80px;
+}
+
+/* ─── Magnetic Button GPU Hint ─────────────────────────────────────
+ * ContactForm 磁吸按鈕使用 rAF + translate3d 高頻更新。
+ * 預先宣告 will-change: transform，讓瀏覽器提前建立合成層，
+ * 避免每次 transform 更新都觸發重新合成（Composite Layer Re-promotion）。
+ *
+ * 規範修正 (2026-05-01)：
+ * - 對應 GSAP_SELECTORS.magneticBtn = 'magnetic-button-element'
+ * - 只設 will-change，不在此處寫任何視覺樣式（Layer 1 語意層職責）
+ * ──────────────────────────────────────────────────────────────────── */
+.magnetic-button-element {
+  will-change: transform;
 }
